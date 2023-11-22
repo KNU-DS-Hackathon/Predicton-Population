@@ -12,10 +12,6 @@ import matplotlib.pyplot as plt
 
 def lstm(df):
 
-
-    df = pd.read_csv('./dataset/forecasting_dataset(2013-2030).csv', encoding='utf-8')
-    data = df
-
     use_cols = ['총인구수(명)', '유치원 수', '초등학교 수', '출생건수', '사망건수', '혼인건수', '이혼건수', '학령인구(명)']
     df['행정구역'].value_counts()
 
@@ -136,8 +132,6 @@ def lstm(df):
     predicted_data.round()
 
     predicted_df = pd.DataFrame({'연도': y, '행정구역': r, '학령인구(명)': predicted_data.round().flatten()})
-
-    predicted_df.to_csv('./dataset/predicted_school_age_population(2021-2030).csv', encoding='utf-8', index=False)
     
     return mape
 

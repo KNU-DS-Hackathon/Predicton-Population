@@ -43,9 +43,6 @@ def parameterTuning(distance, params):
 
 
     # %%
-    normalized_df.to_csv('./dataset/distance_normalize_v2.csv')
-
-    # %%
     df = pd.read_csv('./dataset/no_NaN_dataset_final.csv')
 
 
@@ -156,7 +153,6 @@ def parameterTuning(distance, params):
     # procedded_df의 '연도' 컬럼을 반올림해서 int 정수로 바꾸기
 
     processed_df['연도'] = processed_df['연도'].round().astype(int)
-    processed_df.to_csv('./dataset/weighted_dataset_v6.csv')
     
     return processed_df
 
@@ -172,10 +168,7 @@ paramsList = np.arange(0.1, 1.0, 0.1)
 
 mapeList = list()
 
-df = parameterTuning(20, 0.6)
-
-print(df.head())
-
+"""
 try:
     for i in distanceList:
         for j in paramsList:
@@ -188,3 +181,37 @@ except KeyboardInterrupt:
 finally:
     print(mapeList)
     print("Finish")
+"""
+
+
+# 멀티스레딩을 위한 함수 정의
+def thread_function(distance, param):
+    df = parameterTuning(distance, param)
+    df = val_generate.make_df(df)
+    mape = lstm.lstm(df)
+    return [distance, param, mape]
+
+from concurrent.futures import ProcessPoolExecutor, as_completed
+
+# 이 부분을 함수로 정의하십시오
+def main():
+    with ProcessPoolExecutor(max_workers=10) as executor:
+        futures = []
+        for i in distanceList:
+            for j in paramsList:
+                future = executor.submit(thread_function, i, j)
+                futures.append(future)
+
+        try:
+            for future in as_completed(futures):
+                mapeList.append(future.result())
+
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt")
+        finally:
+            print(mapeList)
+            print("Finish")
+
+# 이 부분이 중요합니다
+if __name__ == '__main__':
+    main()

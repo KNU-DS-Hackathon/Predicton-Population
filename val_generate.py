@@ -99,9 +99,6 @@ def make_df(df):
     # %%
     df.sort_values(by=['행정구역', '연도'], inplace=True)
 
-
-    # %%
-    df.to_csv('./dataset/forecasting_dataset(2013-2030).csv', encoding='utf-8', index=False)
     
     warnings.filterwarnings(action='default')
 
