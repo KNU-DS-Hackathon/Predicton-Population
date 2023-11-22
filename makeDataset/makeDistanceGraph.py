@@ -210,6 +210,9 @@ def main():
             print("KeyboardInterrupt")
         finally:
             print(mapeList)
+            # mapeList를 csv 파일로 저장하기
+            mapeList_df = pd.DataFrame(mapeList, columns=['distance', 'param', 'mape'])
+            mapeList_df.to_csv('./dataset/mapeList.csv', index=False)
             print("Finish")
 
 # 이 부분이 중요합니다
