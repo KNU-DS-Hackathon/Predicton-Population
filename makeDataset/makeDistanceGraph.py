@@ -168,7 +168,7 @@ paramsList = np.arange(0.1, 1.0, 0.1)
 
 mapeList = list()
 
-"""
+
 try:
     for i in distanceList:
         for j in paramsList:
@@ -180,6 +180,9 @@ except KeyboardInterrupt:
     print("KeyboardInterrupt")
 finally:
     print(mapeList)
+    # mapeList를 csv 파일로 저장하기
+    mapeList_df = pd.DataFrame(mapeList, columns=['distance', 'param', 'mape'])
+    mapeList_df.to_csv('./dataset/mapeList.csv', index=False)
     print("Finish")
 """
 
@@ -218,3 +221,5 @@ def main():
 # 이 부분이 중요합니다
 if __name__ == '__main__':
     main()
+
+"""
