@@ -151,6 +151,8 @@ def parameterTuning(distance, params):
             continue
 
     # procedded_df의 '연도' 컬럼을 반올림해서 int 정수로 바꾸기
+    
+    print(processed_df.head())
 
     processed_df['연도'] = processed_df['연도'].round().astype(int)
     
@@ -163,63 +165,22 @@ import val_generate
 import lstm
 import numpy as np
 
-distanceList = range(1, 130, 5)
-paramsList = np.arange(0.1, 1.0, 0.1)
+distanceList = range(30, 150, 10)
+paramsList = np.arange(0.1, 1.0, 0.2)
 
 mapeList = list()
 
 
-try:
-    for i in distanceList:
-        for j in paramsList:
-            df = parameterTuning(i, j)
-            df = val_generate.make_df(df)
-            mape = lstm.lstm(df)
-            mapeList.append([i, j, mape])
-except KeyboardInterrupt:
-    print("KeyboardInterrupt")
-finally:
-    print(mapeList)
-    # mapeList를 csv 파일로 저장하기
-    mapeList_df = pd.DataFrame(mapeList, columns=['distance', 'param', 'mape'])
-    mapeList_df.to_csv('./dataset/mapeList.csv', index=False)
-    print("Finish")
-"""
+i = 31
+j = 1
+df = parameterTuning(i, j)
+df.to_csv(f'./dataset/processedData/{i}_{j}.csv', index=False)
+df = val_generate.make_df(df)
+mape = lstm.lstm(df)
+mapeList.append([i, j, mape])
 
-
-# 멀티스레딩을 위한 함수 정의
-def thread_function(distance, param):
-    df = parameterTuning(distance, param)
-    df = val_generate.make_df(df)
-    mape = lstm.lstm(df)
-    return [distance, param, mape]
-
-from concurrent.futures import ProcessPoolExecutor, as_completed
-
-# 이 부분을 함수로 정의하십시오
-def main():
-    with ProcessPoolExecutor(max_workers=10) as executor:
-        futures = []
-        for i in distanceList:
-            for j in paramsList:
-                future = executor.submit(thread_function, i, j)
-                futures.append(future)
-
-        try:
-            for future in as_completed(futures):
-                mapeList.append(future.result())
-
-        except KeyboardInterrupt:
-            print("KeyboardInterrupt")
-        finally:
-            print(mapeList)
-            # mapeList를 csv 파일로 저장하기
-            mapeList_df = pd.DataFrame(mapeList, columns=['distance', 'param', 'mape'])
-            mapeList_df.to_csv('./dataset/mapeList.csv', index=False)
-            print("Finish")
-
-# 이 부분이 중요합니다
-if __name__ == '__main__':
-    main()
-
-"""
+print(mapeList)
+# mapeList를 csv 파일로 저장하기
+mapeList_df = pd.DataFrame(mapeList, columns=['distance', 'param', 'mape'])
+mapeList_df.to_csv('./dataset/mapeList2.csv', index=False)
+print("Finish")

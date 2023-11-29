@@ -9,14 +9,26 @@ from sklearn.model_selection import train_test_split
 import lightgbm as lgb
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import mean_squared_error
+from tensorflow.keras.callbacks import EarlyStopping
+import tensorflow as tf
+import random as python_random
+
+# 시드 값 설정
+np.random.seed(1)
+python_random.seed(1)
+tf.random.set_seed(1)
+
 
 def lstm(df):
 
     use_cols = ['총인구수(명)', '유치원 수', '초등학교 수', '출생건수', '사망건수', '혼인건수', '이혼건수', '학령인구(명)']
     df['행정구역'].value_counts()
 
-    from sklearn.preprocessing import MinMaxScaler
-    from sklearn.metrics import mean_squared_error
+
 
     # 데이터 전처리
     scaler = MinMaxScaler()
@@ -52,8 +64,7 @@ def lstm(df):
     # 훈련/검증 데이터셋 분리
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
-    from tensorflow.keras.models import Sequential
-    from tensorflow.keras.layers import LSTM, Dense
+
 
     model = Sequential()
     model.add(LSTM(50, activation='relu', input_shape=(X.shape[1], X.shape[2])))
@@ -62,7 +73,7 @@ def lstm(df):
 
     # early stopping
 
-    from tensorflow.keras.callbacks import EarlyStopping
+
     early_stop = EarlyStopping(monitor='val_loss', patience=5, verbose=1)
 
     # 모델 학습
